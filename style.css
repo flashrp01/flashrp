@@ -51,7 +51,30 @@ body{
         0 0 25px rgba(255,0,0,.22),
         0 18px 55px rgba(0,0,0,.55),
         inset 0 0 35px rgba(255,0,0,.04);
-    transition:opacity .8s ease, transform .8s ease;
+    --rotate-x:0deg;
+    --rotate-y:0deg;
+    --glow-x:50%;
+    --glow-y:50%;
+    position:relative;
+    overflow:hidden;
+    transform-style:preserve-3d;
+    will-change:transform;
+    transition:opacity .8s ease, transform .18s ease-out, box-shadow .3s ease;
+}
+
+.container::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    pointer-events:none;
+    background:radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255,45,45,.18), transparent 34%);
+    opacity:.9;
+    transition:background-position .18s ease-out;
+}
+
+.container > *{
+    position:relative;
+    z-index:1;
 }
 
 .logo{
@@ -59,7 +82,12 @@ body{
     max-width:55%;
     margin-bottom:10px;
     filter:drop-shadow(0 0 18px rgba(255,0,0,.85));
+    --logo-x:0px;
+    --logo-y:0px;
+    --logo-rotate:0deg;
     animation:float 4s ease-in-out infinite;
+    will-change:transform;
+    transition:filter .25s ease;
 }
 
 h1{
@@ -139,8 +167,8 @@ footer{
 }
 
 @keyframes float{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-9px);}
+    0%,100%{transform:translate3d(var(--logo-x), var(--logo-y), 32px) rotate(var(--logo-rotate));}
+    50%{transform:translate3d(var(--logo-x), calc(var(--logo-y) - 9px), 32px) rotate(var(--logo-rotate));}
 }
 
 @keyframes zoom{
@@ -186,7 +214,18 @@ body.locked .container{
 
 body.entered .container{
     opacity:1;
-    transform:translateY(0) scale(1);
+    transform:perspective(1100px) rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) translateY(0) scale(1);
+}
+
+body.entered .container:hover{
+    box-shadow:
+        0 0 34px rgba(255,0,0,.34),
+        0 24px 70px rgba(0,0,0,.62),
+        inset 0 0 45px rgba(255,0,0,.055);
+}
+
+body.entered .container:hover .logo{
+    filter:drop-shadow(0 0 26px rgba(255,0,0,1));
 }
 
 @keyframes enterPulse{
@@ -207,7 +246,22 @@ body.entered .container{
         border-radius:20px;
     }
 
-    .logo{
+    .container::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    pointer-events:none;
+    background:radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255,45,45,.18), transparent 34%);
+    opacity:.9;
+    transition:background-position .18s ease-out;
+}
+
+.container > *{
+    position:relative;
+    z-index:1;
+}
+
+.logo{
         width:155px;
         max-width:65%;
     }
